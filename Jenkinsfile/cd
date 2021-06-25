@@ -1,0 +1,11 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build and Push') {
+            steps {
+                sh './dfy_scripts/build_and_push.sh'
+            }
+        }
+    }
+}
