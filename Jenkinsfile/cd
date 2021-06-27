@@ -1,10 +1,31 @@
 pipeline {
     agent any
-
     stages {
         stage('Build and Push') {
             steps {
                 sh './dfy_scripts/build_and_push.sh'
+                withCredentials([
+                usernamePassword(credentialsId: 'quay-user',passwordVariable:'QUAY_PWD',usernameVariable:'QUAY_USER')
+                ]) {
+                    sh '''
+                    docker login -u ${QUAY_USER} --password $QUAY_PWD quay.io
+                    docker push quay.io/sohan_karun/dopsify_dfy_tpl_lb:0.0.1-1
+                    '''
+                }
+
+
+
+                //withDockerRegistry([credentialsId: 'quay-user', url: 'https://quay.io']) {
+                //    docker.build('quay.io/sohan_karun/dopsify_dfy_tpl_lb:latest', '-f Dockerfile .').push('latest')
+                //}
+                //withDockerRegistry([credentialsId: 'quay-user', url: 'https://quay.io']) {
+                //    sh '''
+                //    docker login -u  -p yyy
+                //    docker push quay.io/sohan_karun/dopsify_dfy_tpl_lb:0.0.1-1
+                //    '''
+                //}
+
+
             }
         }
     }
